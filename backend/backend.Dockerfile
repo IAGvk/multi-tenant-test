@@ -2,8 +2,14 @@ FROM python:3.9-slim
 
 WORKDIR /app
 
-COPY ./app /app
+# Copy the entire backend directory into the container
+COPY ./app /app/app
 
-RUN pip install --no-cache-dir fastapi uvicorn pydantic openai
+# Set PYTHONPATH to the working directory
+ENV PYTHONPATH=/app
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Install dependencies
+RUN pip install --no-cache-dir fastapi uvicorn pydantic openai sqlalchemy passlib[bcrypt] python-jose python-dotenv
+
+# Run the FastAPI application
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
