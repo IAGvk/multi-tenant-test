@@ -43,3 +43,12 @@ def delete_user(user_id: str, db: Session = Depends(get_db)):
     db.delete(user)
     db.commit()
     return {"message": "User deleted successfully"}
+
+
+from app.pg_db.crud.pg_user import create_pg_user
+from app.pg_db.session import get_pg_db
+
+@router.post("/create_pg_user")
+def create_pg_user_endpoint(request: CreateUserRequest, db: Session = Depends(get_pg_db)):
+    user = create_pg_user(db, request.user_id, request.tenant_id, get_password_hash(request.password))
+    return {"message": "User created successfully", "user_id": user.username}

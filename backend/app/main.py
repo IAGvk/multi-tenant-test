@@ -14,7 +14,12 @@ Base.metadata.create_all(bind=engine)
 from app.db.session import SessionLocal
 from app.models.user import User
 from app.core.security import get_password_hash
+from app.pg_db.init_pg_db import init_pg_db
 
+# Initialize PostgreSQL database
+init_pg_db()
+
+# initialize SQLite database
 db = SessionLocal()
 
 # Create a test user

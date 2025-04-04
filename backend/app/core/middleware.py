@@ -9,7 +9,7 @@ class TenantMiddleware:
         self.security = HTTPBearer()
 
     async def __call__(self, scope, receive, send):
-        public_endpoints = ["/api/v1/endpoints/auth/login", "/docs", "/openapi.json", "/favicon.ico"]
+        public_endpoints = ["/api/v1/endpoints/auth/login", "/api/v1/endpoints/user/create_pg_user","/api/v1/endpoints/auth/pg_login", "/docs", "/openapi.json", "/favicon.ico"]
 
         # Skip middleware for unauthenticated routes
         if scope["type"] == "http" and scope["path"] in public_endpoints:
