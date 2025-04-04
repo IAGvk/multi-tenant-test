@@ -9,6 +9,14 @@ class TenantMiddleware:
         self.security = HTTPBearer()
 
     async def __call__(self, scope, receive, send):
+        public_endpoints = ["/api/v1/endpoints/auth/login", "/docs", "/openapi.json", "/favicon.ico"]
+
+        # Skip middleware for unauthenticated routes
+        if scope["type"] == "http" and scope["path"] in public_endpoints:
+            # Allow unauthenticated access to public endpoints
+            await self.app(scope, receive, send)
+            return
+
         request = Request(scope, receive)
         authorization = request.headers.get("Authorization")
         if not authorization:
