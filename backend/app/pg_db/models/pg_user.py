@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
-from app.pg_db.base import PGBase
+from app.pg_db.session import PGBase
 
 class PGTenant(PGBase):
     __tablename__ = "pg_tenants"

@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 class LoginRequest(BaseModel):
-    tenant_id: str
+    tenant_name: str
     user_id: str
     password: str
 

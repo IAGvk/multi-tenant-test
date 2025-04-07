@@ -3,44 +3,17 @@ from app.api.v1.endpoints import user, auth, llm
 from app.core.config import settings
 from app.core.middleware import TenantMiddleware
 
-####
-from app.db.session import engine
-from app.db.base import Base
-
-# Initialize the database
-Base.metadata.create_all(bind=engine)
-
-#initialise with test users
-from app.db.session import SessionLocal
-from app.models.user import User
-from app.core.security import get_password_hash
-from app.pg_db.init_pg_db import init_pg_db
-
 # Initialize PostgreSQL database
+from app.pg_db.init_pg_db import init_pg_db, init_pg_dummy_data
+from app.pg_db.session import PGSessionLocal
+
 init_pg_db()
+pg_db = PGSessionLocal()
+try:
+    init_pg_dummy_data(pg_db)
+finally:
+    pg_db.close()
 
-# initialize SQLite database
-db = SessionLocal()
-
-# Create a test user
-test_user = User(
-    username="testuser1",
-    tenant_id="testtenant1",
-    hashed_password=get_password_hash("password123")
-)
-db.add(test_user)
-db.commit()
-
-# Create a test user
-test_user = User(
-    username="testuser2",
-    tenant_id="testtenant2",
-    hashed_password=get_password_hash("password123")
-)
-db.add(test_user)
-db.commit()
-db.close()
-####
 
 app = FastAPI(title="Multi-Tenant LLM Backend")
 

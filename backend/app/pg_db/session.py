@@ -2,11 +2,11 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import os
+from app.core.config import settings
 
 # PostgreSQL connection URL from environment variables
-PG_DATABASE_URL = os.getenv("PG_DATABASE_URL", "postgresql://postgres:postgres@localhost:5432/multi_tenant_pg_db")
-
-pg_engine = create_engine(PG_DATABASE_URL)
+PG_DATABASE_URL = settings.PG_DATABASE_URL
+pg_engine = create_engine(PG_DATABASE_URL, echo=True)
 PGSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=pg_engine)
 PGBase = declarative_base()
 

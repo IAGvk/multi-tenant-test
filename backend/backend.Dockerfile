@@ -5,15 +5,18 @@ WORKDIR /app
 # Copy the entire backend directory into the container
 COPY ./app /app/app
 
-# Copy the requirements.txt file from the root directory
+# Copy the requirements.txt file
 COPY ./requirements.txt /app/requirements.txt
 
-# Set PYTHONPATH to the working directory
+# Set PYTHONPATH
 ENV PYTHONPATH=/app
 
-# Install only backend-related dependencies from requirements.txt (creating temp req file as bin/sh by docker doesn't support process substitution like bash --reqs <(grep -E ...)) 
-# also removed --no-cache-dir after pip install to speed up testing)
-RUN pip install -r /app/requirements.txt
+# Install dependencies
+RUN pip install -r /app/requirements.txt --trusted-host pypi.org --trusted-host files.pythonhosted.org
 
-# Run the FastAPI application
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Create a startup script
+COPY ./start.sh /app/start.sh
+RUN chmod +x /app/start.sh
+
+# Use the startup script as the entry point
+CMD ["/app/start.sh"]

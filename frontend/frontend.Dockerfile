@@ -10,7 +10,7 @@ COPY ./requirements.txt /app/requirements.txt
 
 # Install only frontend-related dependencies from requirements.txt
 # also removed --no-cache-dir after pip install to speed up testing)
-RUN pip install -r /app/requirements.txt 
+RUN pip install -r /app/requirements.txt --trusted-host pypi.org --trusted-host files.pythonhosted.org
 
 # Run the Streamlit application
 CMD ["streamlit", "run", "streamlit_app/app.py", "--server.port=8501", "--server.address=0.0.0.0", "--logger.level=debug"]
