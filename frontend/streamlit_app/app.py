@@ -1,6 +1,8 @@
 import streamlit as st
 from utils.api_client import login_user, create_user, query_llm
 from utils.logger import get_logger
+from sections import page_1, page_2, page_3
+
 
 logger = get_logger(__name__)  # Use the centralized logger
 
@@ -57,23 +59,21 @@ else:
     st.success(f"Logged in as User {st.session_state.user_id} under Tenant {st.session_state.tenant_name}")
     logger.debug(f"User {st.session_state.user_id} logged in under Tenant {st.session_state.tenant_name}")
 
-    # File Upload for Context
-    uploaded_file = st.file_uploader("Upload a context file", type=["txt"])
-    context = ""
-    if uploaded_file:
-        context = uploaded_file.read().decode("utf-8")
+    # Sidebar navigation
+    st.sidebar.title("Navigation")
+    pages = {
+        "Architecture Input": "page_1",
+        "Initial Analysis": "page_2",
+        "RAG Enhanced Analysis": "page_3"
+    }
+    
+    selected_page = st.sidebar.radio("Go to", list(pages.keys()))
+    st.session_state.current_page = pages[selected_page]
 
-    # Question Input
-    question = st.text_input("Ask a question")
-
-    if st.button("Submit"):
-        if question and context:
-            with st.spinner("Querying LLM..."):
-                logger.debug(f"Querying LLM with question: {question} and context: {context}")
-                response = query_llm(st.session_state.token, question, context)
-                if response:
-                    st.success(f"LLM Response: {response}")
-                else:
-                    st.error("Failed to get a response from the LLM.")
-        else:
-            st.error("Please provide both a question and context.")
+    # Display current page
+    if st.session_state.current_page == "page_1":
+        page_1.show()
+    elif st.session_state.current_page == "page_2":
+        page_2.show()
+    elif st.session_state.current_page == "page_3":
+        page_3.show()

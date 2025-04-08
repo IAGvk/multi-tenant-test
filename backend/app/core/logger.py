@@ -1,7 +1,7 @@
 import logging
 from logging.handlers import RotatingFileHandler
 
-def get_logger(name: str, log_file: str = "frontend_app.log", level: int = logging.DEBUG) -> logging.Logger:
+def get_logger(name: str, log_file: str = "backend_app.log", level: int = logging.DEBUG) -> logging.Logger:
     """
     Creates and configures a logger with a rotating file handler and console output.
 

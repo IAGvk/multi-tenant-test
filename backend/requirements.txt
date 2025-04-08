@@ -10,3 +10,9 @@ python-jose==3.3.0
 python-dotenv==1.0.0
 click==8.1.3
 psycopg2-binary
+qdrant-client
+sentence-transformers
+transformers
+torch
+# https://github.com/huggingface/transformers/issues/37326 Sent Trf init_weights issue 
+accelerate

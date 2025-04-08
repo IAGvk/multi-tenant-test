@@ -53,3 +53,48 @@ def query_llm(token: str, question: str, context: str) -> str:
         logger.error(f"Error querying LLM: {e}")
         return f"Error: {str(e)}"
 
+
+def get_rag_enriched_response(token: str, initial_response: str) -> str:
+    url = f"{BASE_URL}/llm/rag-query"
+    headers = {"Authorization": f"Bearer {token}"}
+    payload = {"initial_response": initial_response}
+    
+    try:
+        response = requests.post(url, json=payload, headers=headers)
+        response.raise_for_status()
+        return response.json().get("answer", "No response from RAG system.")
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Error getting RAG response: {e}")
+        return f"Error: {str(e)}"
+
+# ...existing imports and code...
+
+def submit_architecture_review(token: str, review_data: dict) -> dict:
+    """Submit architecture review data to backend"""
+    url = f"{BASE_URL}/llm/query"
+    headers = {"Authorization": f"Bearer {token}"}
+    
+    # Format the review data into a structured question
+    context = f"""
+    Architecture Review Details:
+    - Internet Facing: {review_data.get('internet_facing')}
+    - Data Sensitivity: {review_data.get('data_sensitivity')}
+    - Existing Components: {review_data.get('existing_components')}
+    - New Components: {review_data.get('new_components')}
+    - Hosting Attributes: {review_data.get('hosting_attributes')}
+    """
+    
+    payload = {
+        "question": "Analyze this architecture for security and compliance considerations",
+        "context": context
+    }
+    
+    logger.debug(f"Payload sent to architecture review: {payload}")
+    try:
+        response = requests.post(url, json=payload, headers=headers)
+        logger.debug(f"Response from architecture review: {response.status_code} - {response.text}")
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Error submitting architecture review: {e}")
+        return {"error": str(e)}

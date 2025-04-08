@@ -14,6 +14,12 @@ try:
 finally:
     pg_db.close()
 
+# Initialize Qdrant with sample_docs
+from app.vector_db.init_qdrant import init_qdrant
+init_qdrant()
+
+
+
 
 app = FastAPI(title="Multi-Tenant LLM Backend")
 

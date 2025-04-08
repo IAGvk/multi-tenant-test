@@ -1,23 +1,26 @@
 from app.pg_db.session import pg_engine, PGBase
 from app.pg_db.models.pg_user import PGUser, PGTenant
 
+from app.core.logger import get_logger
+logger = get_logger(__name__)  # Use the centralized logger
+
 def init_pg_db():
     """Initialize PostgreSQL database."""
-    print("Initializing PostgreSQL database...")
-    print(f"Using database URL: {str(pg_engine.url)}")
+    logger.info("Initializing PostgreSQL database...")
+    logger.info(f"Using database URL: {str(pg_engine.url)}")
     try:
         PGBase.metadata.create_all(bind=pg_engine)
-        print("Tables registered:", [table for table in PGBase.metadata.tables.keys()])
+        logger.info("Tables registered:", [table for table in PGBase.metadata.tables.keys()])
     except Exception as e:
-        print(f"Error creating tables: {str(e)}")
-    print("PostgreSQL database initialized.")
+        logger.error(f"Error creating tables: {str(e)}")
+    logger.info("PostgreSQL database initialized.")
 
 from sqlalchemy.orm import Session
 from app.core.security import get_password_hash
 
 def init_pg_dummy_data(db: Session):
     """Initialize PostgreSQL database with dummy tenants and users."""
-    print("Creating dummy tenants and users...")
+    logger.info("Creating dummy tenants and users...")
     
     # Create tenants
     tenant_data = [
@@ -31,7 +34,7 @@ def init_pg_dummy_data(db: Session):
             tenant = PGTenant(**t_data)
             db.add(tenant)
             db.commit()
-            print(f"Created tenant: {tenant.name}")
+            logger.info(f"Created tenant: {tenant.name}")
     
     # Create users
     user_data = [
@@ -57,6 +60,6 @@ def init_pg_dummy_data(db: Session):
             )
             db.add(user)
             db.commit()
-            print(f"Created user: {user.username}")
+            logger.info(f"Created user: {user.username}")
     
-    print("Dummy data initialization completed.")
+    logger.info("Dummy data initialization completed.")
