@@ -19,7 +19,7 @@ class VectorDBService:
         # self.tokenizer = AutoTokenizer.from_pretrained("sentence-transformers/all-MiniLM-L6-v2")
         # self.model = AutoModel.from_pretrained("sentence-transformers/all-MiniLM-L6-v2").to(self.device)
 
-        model = SentenceTransformer('bert-base-nli-mean-tokens')
+        model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2', token  =  False)
         self.model = model
         self.client = QdrantClient(host="qdrant", port=6333)
         self.collection_name = "architecture_reviews"
@@ -29,7 +29,7 @@ class VectorDBService:
         self.client.recreate_collection(
             collection_name=self.collection_name,
             vectors_config=qdrant_models.VectorParams(
-                size=768, #bert # 384 for all-MiniLM-L6-v2 embedding size
+                size=384, #768 for bert # 384 for all-MiniLM-L6-v2 embedding size
                 distance=qdrant_models.Distance.COSINE
             )
         )
@@ -39,7 +39,8 @@ class VectorDBService:
         # inputs = self.tokenizer([text], max_length=384, truncation=True, return_tensors='pt').to(self.device)
         # with torch.no_grad():
         #     embeddings = self.model(**inputs).last_hidden_state.mean(dim=1)
-        # return embeddings.cpu().numpy()[0]
+        # return embeddings.cpu().numpy()[0] 
+        # return self.model.encode(text) for bert-nli 768
         return self.model.encode(text)
 
     def search_similar(self, query_vector: np.ndarray, top_k: int = 3):

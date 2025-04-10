@@ -16,3 +16,5 @@ transformers
 torch
 # https://github.com/huggingface/transformers/issues/37326 Sent Trf init_weights issue 
 accelerate
+# downloading issues for bert , needs hf_xet package
+hf_xet

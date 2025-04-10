@@ -54,7 +54,7 @@ def query_llm(token: str, question: str, context: str) -> str:
         return f"Error: {str(e)}"
 
 
-def get_rag_enriched_response(token: str, initial_response: str) -> str:
+def get_rag_enriched_response(token: str, initial_response: str) -> dict:
     url = f"{BASE_URL}/llm/rag-query"
     headers = {"Authorization": f"Bearer {token}"}
     payload = {"initial_response": initial_response}
@@ -62,12 +62,26 @@ def get_rag_enriched_response(token: str, initial_response: str) -> str:
     try:
         response = requests.post(url, json=payload, headers=headers)
         response.raise_for_status()
-        return response.json().get("answer", "No response from RAG system.")
+        return response.json()
     except requests.exceptions.RequestException as e:
         logger.error(f"Error getting RAG response: {e}")
         return f"Error: {str(e)}"
 
-# ...existing imports and code...
+def get_final_analysis(token: str, initial_response: str, selected_contexts: list) -> dict:
+    url = f"{BASE_URL}/llm/final-analysis"
+    headers = {"Authorization": f"Bearer {token}"}
+    payload = {
+        "initial_response": initial_response,
+        "selected_contexts": selected_contexts
+    }
+    
+    try:
+        response = requests.post(url, json=payload, headers=headers)
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Error getting final analysis: {e}")
+        return f"Error: {str(e)}"
 
 def submit_architecture_review(token: str, review_data: dict) -> dict:
     """Submit architecture review data to backend"""

@@ -1,6 +1,7 @@
 import streamlit as st
 from PIL import Image
 from utils.api_client import submit_architecture_review
+import time
 
 def show():
     st.title("Architecture Review Input")
@@ -44,7 +45,6 @@ def show():
             "hosting_attributes": question4
         }
         
-        st.session_state.review_inputs = review_data
         
         # Submit to backend
         with st.spinner("Processing architecture review..."):
@@ -54,7 +54,11 @@ def show():
             )
             
             if "error" not in response:
-                st.session_state.current_page = "page_2"
+                st.session_state.review_inputs = review_data
+                st.session_state.transitioning = True
+                st.success("Review submitted successfully!")
+                st.session_state.show_page = "page_2"
+                time.sleep(3)
                 st.rerun()
             else:
                 st.error(f"Error submitting review: {response.get('error')}")
